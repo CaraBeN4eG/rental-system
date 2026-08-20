@@ -1,0 +1,6 @@
+.audit-fields {
+  grid-template-columns: 100px repeat(7, 1fr);
+}
+.form-field {
+padding: 10px;
+}

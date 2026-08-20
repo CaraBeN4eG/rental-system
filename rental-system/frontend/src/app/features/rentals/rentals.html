@@ -1,0 +1,128 @@
+<div class="modal-backdrop" *ngIf="showClientModal()">
+  <div class="modal-box">
+    <app-client-form (clientCreated)="onClientCreated($event)" (cancelled)="onClientCancelled()"></app-client-form>
+  </div>
+</div>
+
+<div class="rentals-page">
+  <form (ngSubmit)="createRental()" #rentalForm="ngForm" class="rental-form">
+
+    <!-- Lista klientów (pobierana przez async pipe) nie dla klientów -->
+    <div *ngIf="userService.role() !== 'CLIENT'">
+      <label class="form-label"><strong>Klient</strong></label>
+      <select [(ngModel)]="selectedClientId" name="clientId" class="form-control" required>
+        <!--<option [ngValue]="null" disabled>Wybierz klienta</option> -->
+        <option disabled selected>Wybierz klienta</option>
+
+
+        <!-- async pipe automatycznie pobiera dane -->
+        <option *ngFor="let c of clients()" [ngValue]="c.id">
+          {{ c.firstName }} {{ c.lastName }}
+        </option>
+      </select> 
+    </div>
+
+    <!-- Lista sprzętu (checkboxy, async pipe) -->
+    <fieldset class="equipment-fieldset">
+      <legend class="form-label"><strong>Sprzęt (AVAILABLE)</strong></legend>
+
+      <!-- async pipe pobiera sprzęt -->
+      <div *ngFor="let e of availableEquipment() " class="form-check">
+        <input class="form-check-input" type="checkbox" [id]="'eq-'+e.id" [value]="e.id"
+          (change)="toggleEquipmentSelection(e.id, $event)" [checked]="selectedEquipmentIds.includes(e.id)">
+        <label class="form-check-label" [for]="'eq-'+e.id">
+          {{ e.name }}
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- Daty -->
+    <div class="dates-row">
+      <div class="form-group">
+        <label class="form-label"><strong>Data rozpoczęcia</strong></label>
+        <input type="date" class="form-control" [(ngModel)]="startDate" name="startDate" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><strong>Oczekiwana data zwrotu</strong></label>
+        <input type="date" class="form-control" [(ngModel)]="expectedEnd" name="expectedEnd" required>
+      </div>
+    </div>
+
+    <!-- Przycisk Wypożycz, jedyny, więc bez (click)="doThis()" -->
+    <button type="submit" class="btn btn-prary" >
+      Wypożycz
+    </button>
+  </form>
+
+  <hr>
+
+  <!-- Tabela aktywnych wypożyczeń (async pipe) -->
+  <h3 class="table-title"><strong>Aktywne wypożyczenia</strong></h3>
+  <table class="table rentals-table">
+    <thead>
+      <tr>
+        <th>Klient</th>
+        <th>Sprzęt</th>
+        <th>Od</th>
+        <th>Do</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- async pipe pobiera wypożyczenia -->
+      <ng-container *ngFor="let r of rentals()">
+        <tr>
+          <td>{{ r.client?.firstName }} {{ r.client?.lastName }}</td>
+          <td>
+            <span *ngFor="let item of r.rentalItems; let i = index">
+              <span class="equipment-name">
+                {{ item.equipment.name }}
+                <span *ngIf="item.condition" class="condition-badge tooltip-wrap">
+                  📝
+                  <span class="tooltip-text">{{ item.condition }}</span>
+                </span>
+              </span><span *ngIf="i < r.rentalItems.length - 1">, </span>
+            </span>
+          </td>
+          <td>{{ r.startDate | date:'shortDate' }}</td>
+          <td>{{ r.expectedEnd | date:'shortDate' }}</td>
+          <td>{{ r.status }}</td>
+          <td>
+            <ng-container *ngIf="r.status === 'ACTIVE' && userService.role() !== 'CLIENT'">
+  <button class="btn btn-sm btn-secondary" (click)="toggleExpand(r)">
+    {{ expandedRentalId === r.id ? '▲' : '▼' }}
+  </button>
+  <button class="btn btn-sm btn-success" (click)="returnRental(r.id)">
+    Zwróć
+  </button>
+</ng-container>
+          </td>
+        </tr>
+
+        <tr *ngIf="expandedRentalId === r.id">
+          <td colspan="6">
+            <form>
+              <div class="return-items" *ngFor="let item of r.rentalItems">
+                <strong>{{ item.equipment.name }}</strong>
+
+                <input type="text" placeholder="Opis stanu (opcjonalnie)"
+                  [(ngModel)]="returnFormData[r.id][item.equipmentId].condition"
+                  [name]="'condition-' + r.id + '-' + item.equipmentId">
+
+                <select [(ngModel)]="returnFormData[r.id][item.equipmentId].status"
+                  [name]="'status-' + r.id + '-' + item.equipmentId">
+                  <option value="AVAILABLE">AVAILABLE</option>
+                  <option value="BROKEN">BROKEN</option>
+                  <option value="SERVICE">SERVICE</option>
+                </select>
+              </div>
+            </form>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,85 @@
+<div class="users-page">
+
+    <h3 class="table-title"><strong>Użytkownicy</strong></h3>
+
+    <!-- Wiersz wyszukiwania -->
+    <div class="search-bar">
+        <input type="text" [(ngModel)]="searchData" name="searchData" placeholder="email lub id" />
+        <button (click)="findUser()">🔍</button>
+        <button (click)="clearSearch()">Wyczyść</button>
+    </div>
+
+    <div class="form-grid users-fields">
+        <!-- Dodawanie użytkownika -->
+        <button type="button" class="btn-square" [disabled]="!(editingUserId() 
+        ? isFormValid(editEmail,editRole, editPassword) 
+        : isFormValid(userData.email,userData.role, userData.password))"
+            (click)="editingUserId() ? updateUser(editingUserId()!) : createUser()">
+            <!-- zapis `editingUserId()!` zapewnia kompilator, że funkcja będzie miała wartość i nie trafi sytuacja: updateUser(null) -->
+            {{ editingUserId() ? '✔️' : '+' }}
+        </button>
+
+        <!-- $event = "świeże" otrzymane wartość (jakakolwiek) od użytkownika, wszendzie podaje nowe znaczenie -->
+        <div class="form-field">
+            <input type="text" [ngModel]="editingUserId() ? editEmail : userData.email"
+                (ngModelChange)="editingUserId() ? editEmail = $event : userData.email = $event" name="newEmail" />
+            <span class="field-label">Email</span>
+        </div>
+        <div class="form-field">
+            <select [ngModel]="editingUserId() ? editRole : userData.role"
+                (ngModelChange)="editingUserId() ? editRole = $event : userData.role = $event" name="newRole">
+                <option value="CLIENT">CLIENT</option>
+                <option value="EMPLOYEE">EMPLOYEE</option>
+                <option value="ADMIN">ADMIN</option>
+            </select>
+            <span class="field-label">Rola</span>
+        </div>
+        <div class="form-field">
+            <input [ngModel]="editingUserId() ? editPassword : userData.password"
+                (ngModelChange)="editingUserId() ? editPassword = $event : userData.password = $event"
+                name="newPassword" placeholder="hasło tymczasowe" type="password" />
+            <span class="field-label">hasło</span>
+        </div>
+    </div>
+
+    <!-- Błąd -->
+    <div class="error-banner" *ngIf="errorMessage()">
+        {{ errorMessage() }}
+        <button (click)="errorMessage.set('')">✖️</button>
+        <!-- <button (click)="errorMessage = ''">✖️</button> -->
+    </div>
+
+    <!-- Tabela użytkowników -->
+    <table class="table users-table">
+        <colgroup>
+            <col class="col-actions" />
+            <col class="col-email" />
+            <col class="col-role" />
+            <col class="col-password" />
+        </colgroup>
+        <tbody>
+            <!-- pobieramy liste użytkowników -->
+            <ng-container *ngFor="let u of users()">
+                <!-- Wyróżniamy edytowanego uyżytkownika w tabeli -->
+                <tr [class.row-editing]="editingUserId() === u.id">
+                    <td class="cell-actions">
+                        <span class="tooltip-wrap">
+                            <button class="btn-icon" (click)="editingUserId() === u.id ? cancelEdit() : startEdit(u)">
+                                {{ editingUserId() === u.id ? '✖️' : '✏️' }}
+                            </button>
+                            <span class="tooltip-text">{{ editingUserId() === u.id ? 'Anuluj edycję' : 'Edytuj'}}</span>
+                        </span>
+                    </td>
+                    <td>{{u.email}}</td>
+                    <td>{{u.role}}</td>
+                    <td class="cell-password">
+                        <span class="tooltip-wrap" *ngIf="editingUserId() === u.id">
+                            <button class="btn-icon" (click)="deleteUser(u.id)">🗑️</button>
+                            <span class="tooltip-text">Usuń użytkownika</span>
+                        </span>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,55 @@
+<div class="form-container">
+  <h2>Rejestracja</h2>
+
+  <form (ngSubmit)="onSubmit()"> <!-- powiązuje przycisk z funkcją -->
+
+    <input
+      type="email"
+      placeholder="Email"
+      [(ngModel)]="formData.email"
+      name="email"
+    />
+
+    <input
+      type="password"
+      placeholder="Hasło"
+      [(ngModel)]="formData.password"
+      name="password"
+    />
+
+<!--
+    <input
+      type="text"
+      placeholder="Imię"
+      [(ngModel)]="formData.firstName"
+      name="firstName"
+    />
+
+    <input
+      type="text"
+      placeholder="Nazwisko"
+      [(ngModel)]="formData.lastName"
+      name="lastName"
+    />
+
+    <input
+      type="text"
+      placeholder="Telefon"
+      [(ngModel)]="formData.phone"
+      name="phone"
+    />
+
+    <input
+      type="text"
+      placeholder="Adres"
+      [(ngModel)]="formData.address"
+      name="address"
+    />
+-->
+
+    <button type="submit">Zarejestruj się</button>
+
+  </form>
+  <!-- będzie pokazane przy nie pustym wierszu errorMessage -->
+  <p *ngIf="errorMessage">{{ errorMessage }}</p>
+</div>

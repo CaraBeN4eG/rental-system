@@ -1,0 +1,32 @@
+<div class="client-form">
+  <h3>Uzupełnij swoje dane</h3>
+
+  <form (ngSubmit)="onSubmit()" #clientFormRef="ngForm">
+    <div class="form-group">
+      <label>Imię</label>
+      <input type="text" [(ngModel)]="formData.firstName" name="firstName" required>
+    </div>
+
+    <div class="form-group">
+      <label>Nazwisko</label>
+      <input type="text" [(ngModel)]="formData.lastName" name="lastName" required>
+    </div>
+
+    <div class="form-group">
+      <label>Telefon</label>
+      <input type="text" [(ngModel)]="formData.phone" name="phone" required>
+    </div>
+
+    <div class="form-group">
+      <label>Adres</label>
+      <input type="text" [(ngModel)]="formData.address" name="address" required>
+    </div>
+
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="!clientFormRef.valid">Zapisz</button>
+      <button type="button" (click)="cancel()">Anuluj</button>
+    </div>
+  </form>
+</div>

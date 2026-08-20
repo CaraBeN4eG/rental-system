@@ -1,0 +1,133 @@
+.users-page {
+    /* Локальні custom properties — не виходять за межі .users-page */
+    --users-actions-width: 40px;
+    --users-row-gap: 16px;
+    padding: 0 24px;
+}
+
+/* =========================================================
+[старий коментар, не певен, що актуальний]   
+   CREATE FORM (стара .create-user-form більше не потрібна,
+   бо тепер форма живе на form-grid + .users-fields)
+   ========================================================= */
+
+.users-page .form-grid.users-fields {
+    grid-template-columns: var(--users-actions-width) repeat(3, 1fr);
+    gap: var(--users-row-gap);
+}
+
+/* =========================================================
+   TABLE — та сама 4-колонкова геометрія через colgroup
+   ========================================================= */
+
+.users-page .users-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* Перша колонка отримує ту саму ширину, що й "+" у формі.
+   Решта трьох col без width — при table-layout: fixed браузер
+   ділить залишок порівну, що еквівалентно repeat(3, 1fr). */
+.users-page .users-table .col-actions {
+    width: var(--users-actions-width);
+}
+
+/* Password-колонка в таблиці навмисно порожня —
+   просто зберігаємо геометрію, тексту там немає. */
+
+/* =========================================================
+   ACTIONS CELL (перша td у кожному рядку)
+   ========================================================= */
+
+.users-page .users-table .cell-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Password-клітинка у режимі редагування: інпут + окрема
+   кнопка видалення праворуч. Інпут звужується під іконку,
+   а не навпаки. */
+.users-page .users-table .cell-password {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.users-page .users-table .cell-password input {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.users-page .users-table .cell-password .tooltip-wrap {
+    flex: 0 0 auto;
+}
+
+.users-page .btn-icon {
+    padding: 0.35rem;
+    border: none;
+    background: transparent;
+    line-height: 1;
+    font-size: 1rem;
+}
+
+.users-page .btn-icon:hover {
+    border: none;
+    background: transparent;
+    opacity: 0.75;
+}
+
+/* Рядок редагування трохи виділяємо, щоб було видно контекст */
+.users-page .row-editing {
+    background: var(--bg-secondary);
+}
+
+.users-page .users-table td {
+    vertical-align: middle;
+}
+
+.users-page .users-table input,
+.users-page .users-table select {
+    width: 100%;
+}
+
+/* =========================================================
+   SEARCH BAR — локально, не чіпаємо глобальні .search-bar
+   (якщо такий клас десь ще використовується)
+   ========================================================= */
+
+.users-page .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.users-page .search-bar input {
+    flex: 1 1 auto;
+    padding: 0.8rem 0.9rem;
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+    border: 1px solid #4b535d;
+    border-radius: var(--radius-sm);
+    transition:
+        border-color var(--transition-fast),
+        background var(--transition-fast);
+}
+
+.users-page .search-bar input:hover {
+    border-color: #66707c;
+}
+
+.users-page .search-bar input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.users-page .search-bar button {
+    flex: 0 0 auto;
+}

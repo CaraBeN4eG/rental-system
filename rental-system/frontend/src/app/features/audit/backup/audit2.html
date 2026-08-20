@@ -1,0 +1,52 @@
+<div class="form-grid audit-fields">
+
+    <div class="form-field">
+        <input type="text" placeholder="ID użytkownika" [(ngModel)]="auditFields.userId" name="userId"
+            (ngModelChange)="loadLogs()" />
+    </div>
+
+    <div class="form-field">
+        <input type="text" placeholder="ID wypożyczenia" [(ngModel)]="auditFields.rentalId" name="rentalId"
+            (ngModelChange)="loadLogs()" />
+    </div>
+
+    <div class="form-field">
+        <select [ngModel]="selectedAction()" (ngModelChange)="selectedAction.set($event); loadLogs()">
+            <option *ngFor="let act of actions" [value]="act">{{ act || 'Akcje' }}</option>
+        </select>
+    </div>
+
+    <div class="form-field">
+        <select [ngModel]="selectedEntity()" (ngModelChange)="selectedEntity.set($event); loadLogs()">
+            <option *ngFor="let ent of entities" [value]="ent">{{ent || 'Encje'}}</option>
+        </select>
+    </div>
+
+    <div class="form-field">
+        <input type="text" placeholder="ID encji" [(ngModel)]="auditFields.entityId" name="entityId"
+            (ngModelChange)="loadLogs()" />
+    </div>
+
+    <div class="form-field">
+        <span class="field-label">old Data</span>
+    </div>
+
+    <div class="form-field">
+        <span class="field-label">new Data</span>
+    </div>
+
+    <div *ngFor="let log of logs()" class="log-row">
+        <tr>
+            <div>{{log.userId}}</div>
+            <div>{{log.rentalId}}</div>
+            <div>{{log.action}}</div>
+            <div>{{log.entityType}}</div>
+            <div>{{log.entityId}}</div>
+            <div>{{log.oldDataParsed | json}}</div>
+            <div>{{log.newDataParsed | json}}</div>
+        </tr>
+    </div>
+    <tr *ngIf="logs().length === 0">
+        <td colspan="7">Brak wyników</td>
+    </tr>
+</div>

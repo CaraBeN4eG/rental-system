@@ -1,0 +1,61 @@
+<div class="form-grid equipment-fields">
+  <!-- Przycisk dodaj sprzęt -->
+  <button type="submit" class="btn btn-pri amary btn-square" [disabled]="!canSubmit()" (click)="addEquipment()">
+    +
+  </button>
+
+  <div class="form-field">
+    <input type="text" [(ngModel)]="formData.name" name="name" />
+    <span class="field-label">Nazwa</span>
+  </div>
+
+  <div class="form-field">
+    <input type="text" [(ngModel)]="formData.description" name="description" />
+    <span class="field-label">Opis</span>
+  </div>
+
+  <div class="form-field">
+    <input type="text" [(ngModel)]="formData.serialNumber" name="serialNumber" />
+    <span class="field-label">Numer seryjny</span>
+  </div>
+
+  <div class="form-field">
+    <input type="number" [(ngModel)]="formData.dailyRate" name="dailyRate" />
+    <span class="field-label">Cena dzienna</span>
+  </div>
+
+  <div class="form-field">
+    <input type="number" [(ngModel)]="formData.depositAmount" name="depositAmount" />
+    <span class="field-label">Kaucja</span>
+  </div>
+
+  <div class="form-field">
+    <select [(ngModel)]="formData.categoryId" name="categoryId">
+      <option value="">Wybierz</option>
+      <option *ngFor="let oneCateg of categories()" [value]="oneCateg.id">
+        {{ oneCateg.name }}
+      </option>
+    </select>
+    <span class="field-label">Kategoria</span>
+
+    <div class="form-field">
+      <button type="button" (click)="toggleCategoryForm()">
+        + Nowa kategoria
+      </button>
+
+      <div *ngIf="showCategoryForm">
+        <input type="text" [(ngModel)]="newCategName" name="newCategoryName" placeholder="Nazwa kategorii" />
+        <button type="button" (click)="addCategory()">Dodaj</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngFor="let item of equipmentList()" class="equipment-row">
+  <button type="button" class="btn-square" (click)="onDelete(item.id)">×</button>
+  <div>{{ item.name }}</div>
+  <div>{{ item.description }}</div>
+  <div>{{ item.serialNumber }}</div>
+  <div>{{ item.dailyRate }}</div>
+  <div>{{ item.depositAmount }}</div>
+  <div>{{ item.category?.name }}</div>
+</div>

@@ -1,0 +1,80 @@
+<table class="table audit-table">
+    <thead>
+        <tr>
+            <th>
+                <div class="form-field">
+                    <input type="text" [(ngModel)]="auditFields.userId" name="userId" (ngModelChange)="loadLogs()" />
+                    <span class="field-label">ID użytkownika</span>
+                </div>
+            </th>
+            <th>
+                <div class="form-field">
+                    <input type="text" [(ngModel)]="auditFields.rentalId" name="rentalId"
+                        (ngModelChange)="loadLogs()" />
+                    <span class="field-label">ID wypożyczenia</span>
+                </div>
+            </th>
+            <th>
+                <div class="form-field">
+                    <select [ngModel]="selectedAction()" (ngModelChange)="selectedAction.set($event); loadLogs()">
+                        <option *ngFor="let act of actions" [value]="act">{{ act || 'Wszystkie' }}</option>
+                    </select>
+                    <span class="field-label">Akcja</span>
+                </div>
+            </th>
+            <th>
+                <div class="form-field">
+                    <select [ngModel]="selectedEntity()" (ngModelChange)="selectedEntity.set($event); loadLogs()">
+                        <option *ngFor="let ent of entities" [value]="ent">{{ ent || 'Wszystkie' }}</option>
+                    </select>
+                    <span class="field-label">Encja</span>
+                </div>
+            </th>
+            <th>
+                <div class="form-field">
+                    <input type="text" [(ngModel)]="auditFields.entityId" name="entityId"
+                        (ngModelChange)="loadLogs()" />
+                    <span class="field-label">ID encji</span>
+                </div>
+            </th>
+            <th>
+                <div class="form-field">
+                    <input type="text" disabled style="visibility: hidden;" />
+                    <span class="field-label">Data</span>
+                </div>
+            </th>
+            <th></th> <!-- ??? -->
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngIf="logs().length === 0">
+            <td colspan="7" style="text-align: center;">Brak wyników</td>
+        </tr>
+
+        <ng-container *ngFor="let log of logs()">
+            <tr>
+                <td>{{ log.userId }}</td>
+                <td>{{ log.rentalId }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.entityType }}</td>
+                <td>{{ log.entityId }}</td>
+                <td>{{ log.createdAt | date:'short' }}</td>
+                <td>
+                    <button class="btn btn-sm btn-secondary" (click)="toggleExpand(log)">
+                        {{ expandedLogId === log.id ? '▲' : '▼' }}
+                    </button>
+                </td>
+            </tr>
+
+            <tr *ngIf="expandedLogId === log.id">
+                <td colspan="7">
+                    <strong>Stare dane:</strong>
+                    <pre>{{ log.oldData | json }}</pre>
+                    <strong>Nowe dane:</strong>
+                    <pre>{{ log.newData | json }}</pre>
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</table>

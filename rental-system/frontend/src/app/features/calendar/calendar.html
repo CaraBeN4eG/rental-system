@@ -1,0 +1,68 @@
+<div class="calendar-page">
+
+  <!-- LEWA STRONA — KALENDARZ -->
+  <div class="calendar-section">
+
+    <!-- Nawigacja miesiąca -->
+    <div class="calendar-nav">
+      <button (click)="prevMonth()">◄</button>
+      <span>{{ getMonthLabel() }}</span>
+      <button (click)="nextMonth()">►</button>
+    </div>
+
+    <!-- Siatka kalendarza -->
+    <div class="calendar-grid">
+
+      <!-- Nagłówki dni tygodnia -->
+      <div *ngFor="let d of weekDays" class="day-header">
+        {{ d }}
+      </div>
+
+      <!-- 42 komórki -->
+      <div *ngFor="let day of calendarDays()"
+           class="day-cell"
+           [class.other-month]="day.isOtherMonth">
+
+        <!-- Numer dnia -->
+        <span class="day-number">
+          {{ day.date | date:'d' }}
+        </span>
+
+        <!-- Kropki sprzętu -->
+        <div class="dots-row">
+          <span *ngFor="let eqId of day.occupied"
+                class="dot"
+                [style.background-color]="getColor(eqId)">
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PRAWA STRONA — SPRZĘT -->
+  <div class="equipment-panel">
+    <h3>Sprzęt</h3>
+
+    <!-- Lista sprzętu -->
+    <label *ngFor="let eq of equipmentList()" class="eq-item">
+      <input type="checkbox"
+             [checked]="eq.checked"
+             (change)="toggleEquipment(eq.id)" />
+
+      <span class="dot" [style.background-color]="eq.color"></span>
+      {{ eq.name }}
+    </label>
+
+    <hr />
+
+    <!-- Zaznacz wszystko -->
+    <label class="eq-item">
+      <input type="checkbox"
+             [checked]="isAllChecked()"
+             (change)="toggleAll($event.target.checked)" />
+      Zaznacz wszystko
+    </label>
+
+  </div>
+</div>

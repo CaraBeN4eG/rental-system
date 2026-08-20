@@ -1,0 +1,43 @@
+<div class="form-grid audit-fields">
+
+    <div class="form-field">
+        <input type="text" [(ngModel)]="auditFields.userId" name="userId" />
+        <span class="field-label">user Id</span>
+    </div>
+
+    <div class="form-field">
+        <input type="text" [(ngModel)]="auditFields.rentalId" name="rentalId" />
+        <span class="field-label">rental Id</span>
+    </div>
+
+    <div class="form-field">
+        <select [ngModel]="selectedAction()" (ngModelChange)="selectedAction.set($event)">
+            <option *ngFor="let act of actions" [value]="act">{{ act || 'Wszystkie' }}</option>
+        </select>
+        <span class="field-label">akcja</span>
+    </div>
+
+    <div class="form-field">
+        <select [ngModel]="selectedEntity()" (ngModelChange)="selectedEntity.set($event)">
+            <option *ngFor="let ent of entities" [value]="ent">{{ent || 'Wszystkie'}}</option>
+        </select>
+        <span class="field-label">encja</span>
+    </div>
+
+    <div class="form-field">
+        <input type="text" [(ngModel)]="auditFields.entityId" name="entityId" />
+        <span class="field-label">entity Id</span>
+    </div>
+
+    <div class="form-field">
+        <span class="field-label">old Data</span>
+    </div>
+
+    <div class="form-field">
+        <span class="field-label">new Data</span>
+    </div>
+
+    <div *ngFor="let log of logs()" class="log-row">
+
+    </div>
+</div>

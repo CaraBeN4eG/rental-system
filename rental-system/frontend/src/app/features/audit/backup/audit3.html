@@ -1,0 +1,45 @@
+<table class="table audit-table">
+  <thead>
+    <tr>
+      <th>ID użytkownika</th>
+      <th>ID wypożyczenia</th>
+      <th>Akcja</th>
+      <th>Encja</th>
+      <th>ID encji</th>
+      <th>Data</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <!-- Brak wyników -->
+    <tr *ngIf="logs().length === 0">
+      <td colspan="7">Brak wyników</td>
+    </tr>
+
+    <ng-container *ngFor="let log of logs()">
+      <tr>
+        <td>{{ log.userId }}</td>
+        <td>{{ log.rentalId }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.entityType }}</td>
+        <td>{{ log.entityId }}</td>
+        <td>{{ log.createdAt | date:'short' }}</td>
+        <td>
+          <button class="btn btn-sm btn-secondary" (click)="toggleExpand(log.id)">
+            {{ expandedLogIds().has(log.id) ? '▲' : '▼' }}
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="expandedLogIds().has(log.id)">
+        <td colspan="7">
+          <strong>Stare dane:</strong>
+          <pre>{{ log.oldData | json }}</pre>
+          <strong>Nowe dane:</strong>
+          <pre>{{ log.newData | json }}</pre>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>

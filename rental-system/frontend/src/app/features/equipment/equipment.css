@@ -1,0 +1,12 @@
+.equipment-fields {
+  grid-template-columns: 40px repeat(6, 1fr);
+}
+
+.equipment-row {
+  display: grid;
+  grid-template-columns: 40px repeat(6, 1fr);
+  gap: 16px;
+  padding: 8px 0;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}

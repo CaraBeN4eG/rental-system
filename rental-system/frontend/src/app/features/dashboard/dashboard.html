@@ -1,0 +1,41 @@
+<div class="dashboard">
+  <header>
+    <h2>Panel główny</h2>
+
+    <!-- <button (click)="logout()">Wyloguj się</button> -->
+
+    <div style="text-align: right; margin-bottom: 0px;">
+      <button (click)="logout()">Wyloguj się</button> 
+    </div>
+  </header>
+
+  <nav>
+    <a class="dashboard-link" routerLink="/rentals">
+      Wypożyczenia
+    </a>
+
+    <a class="dashboard-link" routerLink="/calendar">
+      Kalendarz
+    </a>
+
+    <ng-container *ngIf="userService.role() !== 'CLIENT'">
+      <a class="dashboard-link" routerLink="/equipment">
+        Sprzęt
+      </a>
+
+      <a class="dashboard-link" routerLink="/reports">
+        Raporty
+      </a>
+    </ng-container>
+
+    <a class="dashboard-link" routerLink="/audit" *ngIf="userService.role() === 'ADMIN'">
+      Audyt
+    </a>
+
+    <a class="dashboard-link" routerLink="/users" *ngIf="userService.role() === 'ADMIN'">
+      Użytkownicy
+    </a>
+  </nav>
+
+  <p>Zalogowano jako: {{ role }}</p>
+</div>

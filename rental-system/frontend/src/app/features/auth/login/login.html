@@ -1,0 +1,25 @@
+<div class="form-container">
+  <h2>Logowanie</h2>
+
+  <form (ngSubmit)="onSubmit()"> <!-- powiązuje przycisk z funkcją -->
+
+    <input
+      type="email"
+      placeholder="Email"
+      [(ngModel)]="formData.email"
+      name="email"
+    />
+
+    <input
+      type="password"
+      placeholder="Hasło"
+      [(ngModel)]="formData.password"
+      name="password"
+    />
+
+    <button type="submit">Załoguj się</button>
+
+  </form>
+  <!-- będzie pokazane przy nie pustym wierszu errorMessage -->
+  <p *ngIf="errorMessage" style="color: #FF6B6B;">{{ errorMessage }}</p>
+ </div>

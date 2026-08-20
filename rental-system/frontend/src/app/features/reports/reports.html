@@ -1,0 +1,53 @@
+<div class="reports-page">
+
+  <h2>Raport przychodów</h2>
+
+  <form (ngSubmit)="$event.preventDefault()">
+    <label for="startDate">Od</label>
+    <input id="startDate" type="date" [(ngModel)]="startDate" name="startDate" />
+
+    <label for="dateTo">Do</label>
+    <input id="dateTo" type="date" [(ngModel)]="dateTo" name="dateTo" />
+
+    <button type="button" (click)="loadPreview()" [disabled]="!canGenerate() || isLoading()"
+      aria-disabled="{{ !canGenerate() || isLoading() }}">
+      Podgląd danych
+    </button>
+
+    <button type="button" (click)="generateReport()" [disabled]="!canGenerate() || isLoading()"
+      aria-disabled="{{ !canGenerate() || isLoading() }}">
+      Generuj PDF
+    </button>
+
+    <span *ngIf="isLoading()" class="loading-indicator">Ładowanie...</span>
+  </form>
+
+  <div *ngIf="przeview() as przeviewData">
+
+    <p><strong>Suma przychodów:</strong> {{ przeviewData.totalRevenue }}</p>
+    <p><strong>Suma kar:</strong> {{ przeviewData.totalPenalties }}</p>
+    <p><strong>Razem:</strong> {{ przeviewData.grandTotal }}</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID wynajmu</th>
+          <th>Klient</th>
+          <th>Kwota</th>
+          <th>Kara</th>
+          <th>Data zwrotu</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of przeviewData.rentals">
+          <td>{{ row.id }}</td>
+          <td>{{ row.client }}</td>
+          <td>{{ row.totalAmount | number:'1.2-2' }}</td>
+          <td>{{ row.penaltyAmount | number:'1.2-2' }}</td>
+          <td>{{ row.returnedAt | date:'shortDate' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
