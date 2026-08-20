@@ -1,0 +1,4 @@
+name,description,serialNumber,dailyRate,depositAmount,categoryId
+Wiertarka Bosch,Wiertarka udarowa 800W,SN-001,25.00,100.00,cat-1
+Szlifierka,Szlifierka kątowa 125mm,SN-002,20.00,80.00,cat-1
+Młot udarowy,Mały młot udarowy,SN-003,15.50,60.00,cat-2

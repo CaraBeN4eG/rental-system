@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url = env("DATABASE_URL")
+}
+
+// Role: ADMIN | EMPLOYEE | CLIENT
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  role         String     @default("CLIENT")
+
+  client    Client?
+  employee  Employee?
+  auditLogs AuditLog[]
+
+  @@map("users")
+}
+
+model Client {
+  id          String  @id @default(uuid())
+  userId      String  @unique @map("user_id")
+  firstName   String  @map("first_name")
+  lastName    String  @map("last_name")
+  phone       String  @unique
+  address     String
+  depositPaid Float   @default(0) @map("deposit_paid")
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rentals Rental[]
+
+  @@map("clients")
+}
+
+model Employee {
+  id        String @id @default(uuid())
+  userId    String @unique @map("user_id")
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+  phone     String @unique
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rentals Rental[]
+
+  @@map("employees")
+}
+
+// EquipmentStatus: AVAILABLE | RENTED | BROKEN | SERVICE
+model Category {
+  id        String      @id @default(uuid())
+  name      String      @unique
+  equipment Equipment[]
+
+  @@map("categories")
+}
+
+model Equipment {
+  id            String  @id @default(uuid())
+  categoryId    String  @map("category_id")
+  name          String
+  description   String?
+  serialNumber  String? @unique @map("serial_number")
+  dailyRate     Float   @map("daily_rate")
+  depositAmount Float   @default(0) @map("deposit_amount")
+  status        String  @default("AVAILABLE")
+
+  category       Category           @relation(fields: [categoryId], references: [id])
+  rentalItems    RentalItem[]
+  serviceRecords EquipmentService[]
+
+  @@map("equipment")
+}
+
+// RentalStatus: ACTIVE | RETURNED | BROKEN
+model Rental {
+  id            String    @id @default(uuid())
+  clientId      String    @map("client_id")
+  employeeId    String?   @map("employee_id")
+  status        String    @default("ACTIVE")
+  startDate     DateTime  @map("start_date")
+  expectedEnd   DateTime  @map("expected_end")
+  actualEnd     DateTime? @map("actual_end")
+  totalAmount   Float     @default(0) @map("total_amount")
+  penaltyAmount Float     @default(0) @map("penalty_amount")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  client      Client       @relation(fields: [clientId], references: [id])
+  employee    Employee?    @relation(fields: [employeeId], references: [id])
+  rentalItems RentalItem[]
+  auditLogs   AuditLog[]
+
+  @@map("rentals")
+}
+
+model RentalItem {
+  id          String    @id @default(uuid())
+  rentalId    String    @map("rental_id")
+  equipmentId String    @map("equipment_id")
+  dailyRate   Float     @map("daily_rate")
+  returnedAt  DateTime? @map("returned_at")
+  condition   String?
+
+  rental    Rental    @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
+
+  @@unique([rentalId, equipmentId])
+  @@map("rental_items")
+}
+
+model EquipmentService {
+  id          String    @id @default(uuid())
+  equipmentId String    @map("equipment_id")
+  reason      String
+  startedAt   DateTime  @default(now()) @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  cost        Float?
+
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
+
+  @@map("equipment_service")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?  @map("user_id")
+  rentalId   String?  @map("rental_id")
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  oldData    String?  @map("old_data")
+  newData    String?  @map("new_data")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user   User?   @relation(fields: [userId], references: [id])
+  rental Rental? @relation(fields: [rentalId], references: [id])
+
+  @@map("audit_logs")
+}
